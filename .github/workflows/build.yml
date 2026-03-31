@@ -1,39 +1,43 @@
-name: Build Flet APK
+name: Build SOPSoft ERP APK
 on:
   push:
     branches:
+      - main  # Se ejecuta cuando subes cambios a la rama main
+  pull_request:
+    branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11' # Versión estable para Flet
 
-      - name: Install dependencies
+      - name: Instalar Flet y dependencias
         run: |
-          python -m pip install --upgrade pip
           pip install flet
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Si usas más librerias (como requests), agrégalas aquí:
+          # pip install requests 
 
-      - name: Build APK
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.2' # Versión recomendada para Flet 0.27+
+          channel: 'stable'
+
+      - name: Compilar APK con Flet
         run: |
-          # 1. Aceptar licencias de Android SDK (evita que el build se detenga)
-          yes | flutter doctor --android-licenses || true
-          
-          # 2. Inyectar 'y' para la descarga automática del SDK de Flutter 3.41.4+
-          # Usamos '.' para buscar el main.py en la raíz del proyecto
-          printf 'y\n' | flet build apk . --project "SOPSoft-Inventario"
+          # El comando genera el APK en la carpeta build/apk
+          flet build apk --project "SOPSoft ERP" --org com.yohander.sopsoft
 
-      - name: Upload APK
+      - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: Sistema-Inventario-APK
+          name: SOPSoft-Release-APK
           path: build/apk/*.apk
