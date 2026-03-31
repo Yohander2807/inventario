@@ -1,0 +1,16 @@
+DEBE TENER:
+
+Modulo vetnas (SIMULACION DE VENTA):
+    - acceso rapido al producto con un boton de camara para encender y agregar ese producto
+    - calcular el total en dolares y bolivares para pagar
+    - finalizar compra
+    - se puede generar una factura en el sistema para saber que se vendio y X cantidad
+
+Modulo productos (CREAR, ELIMINAR, EDITAR, BUSCAR)
+    - principalmente que se vea el listado de productos con IMAGEN y los tipicos botones de editar o borrar
+    - registar productos (MODAL)
+    - editar producto (MODAL)
+    - eliminar (SPAN)
+
+Modulo reportes
+Modulo configuracion (configurar tasa u otras cosas)
