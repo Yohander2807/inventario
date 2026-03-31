@@ -2,7 +2,7 @@ name: Build SOPSoft ERP APK
 on:
   push:
     branches:
-      - main  # Se ejecuta cuando subes cambios a la rama main
+      - main
   pull_request:
     branches:
       - main
@@ -17,24 +17,23 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Versión estable para Flet
+          python-version: '3.11'
 
       - name: Instalar Flet y dependencias
         run: |
-          pip install flet
-          # Si usas más librerias (como requests), agrégalas aquí:
-          # pip install requests 
+          pip install flet --upgrade
 
       - name: Configurar Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2' # Versión recomendada para Flet 0.27+
+          # Usamos la versión que el log de error solicitó
+          flutter-version: '3.41.4' 
           channel: 'stable'
 
       - name: Compilar APK con Flet
         run: |
-          # El comando genera el APK en la carpeta build/apk
-          flet build apk --project "SOPSoft ERP" --org com.yohander.sopsoft
+          # El comando 'yes' envía automáticamente la letra 'y' a cualquier pregunta
+          yes | flet build apk --project "SOPSoft ERP" --org com.yohander.sopsoft
 
       - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
