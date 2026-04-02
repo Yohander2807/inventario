@@ -25,29 +25,39 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flet
-          # Instala dependencias adicionales si existe el archivo
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: Configurar Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0' # Versión estable recomendada para Flet
+          flutter-version: '3.19.0'
           channel: 'stable'
+
+      - name: Aceptar Licencias de Android
+        run: |
+          # Acepta todas las licencias del SDK para evitar el error de compilación
+          yes | sdkmanager --licenses || true
 
       - name: Compilar APK con Flet
         run: |
           # IMPORTANTE: 
-          # --build-number debe ser mayor al de la APK anterior (ej: 2)
-          # --build-version es la versión visual (ej: 1.1.0)
-          # --org debe ser el mismo que usaste originalmente
-          yes | flet build apk \
+          # --build-number 2: Indica que es una actualización de la versión anterior.
+          # -y: Acepta automáticamente las licencias dentro del comando flet.
+          flet build apk \
             --project "SOPSoft ERP" \
             --org "com.yohander.sopsoft" \
             --build-number 2 \
-            --build-version "1.1.0"
+            --build-version "1.1.0" \
+            -y
 
       - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: SOPSoft-Release-v1.1.0
+          name: SOPSoft-ERP-Update-v1.1.0
           path: build/apk/*.apk
