@@ -24,7 +24,8 @@ jobs:
       - name: Instalar Flet y dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install flet==0.21.0  # Forzamos una versión estable y conocida
+          # Instalamos la versión más reciente disponible (0.84.0)
+          pip install flet
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Configurar Java
@@ -36,18 +37,19 @@ jobs:
       - name: Configurar Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          # Usamos la versión de Flutter que tu log anterior pedía
+          flutter-version: '3.41.4' 
           channel: 'stable'
 
       - name: Aceptar Licencias de Android
         run: |
-          # Aceptamos las licencias directamente en el SDK Manager antes de compilar
+          # Esto soluciona el problema de las licencias desde la raíz del SDK
           yes | sdkmanager --licenses || true
 
       - name: Compilar APK con Flet
         run: |
-          # Eliminamos -y para evitar el error de 'unrecognized arguments'
-          # El comando 'yes |' al inicio enviará la confirmación si Flet la solicita
+          # En la versión 0.84.0, eliminamos el flag '-y' que daba error.
+          # Usamos 'yes |' para confirmar cualquier pregunta interna.
           yes | flet build apk \
             --project "SOPSoft ERP" \
             --org "com.yohander.sopsoft" \
@@ -57,5 +59,5 @@ jobs:
       - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: SOPSoft-ERP-Update-v1.1.0
+          name: SOPSoft-ERP-v1.1.0
           path: build/apk/*.apk
